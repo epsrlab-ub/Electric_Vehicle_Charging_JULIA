@@ -12,7 +12,7 @@ This work is the result of collaborative efforts:
 
 | Name                 | Role                      | Contact                |
 |----------------------|---------------------------|------------------------|
-| **Jordan Ngamaleu-Kemta** | Developed the set of codes | 📧 Jgngamal@buffalo.edu@buffalo.edu |
+| **Jordan Ngamaleu-Kemta** | Developed the set of codes | 📧 Jgngamal@buffalo.edu|
 | **Adedoyin Inaolaji** | Supervised the work        | 📧 ainaolaj@buffalo.edu |
 ## Features
 
