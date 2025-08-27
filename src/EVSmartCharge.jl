@@ -113,7 +113,6 @@ function set_parameters_user()
     n = length(ev_bus)
     return (T, n, η, E, Δt, S_ev, SOC_initial, SOC_target, arrival_time, departure_time, ev_bus)
 end
-# <<< paste your prompt_mode() here >>>
 # =========================
 # Charging mode selector
 # =========================
@@ -143,13 +142,41 @@ function prompt_mode()
 end
 
 """
-Run the EV charging model (placeholder).
+Run a simple EV charging optimization.
+
+The model schedules charging power for each EV so that the desired
+state-of-charge is reached by the specified departure time while
+minimizing total charging power. Only very basic constraints are
+considered, but this function serves as a concrete example of how the
+collected user inputs can be fed into an optimization model.
 """
 function run_model()
-    params = set_parameters_user()
+    T, n, η, E, Δt, S_ev, SOC_initial, SOC_target, arrival_time, departure_time, ev_bus = set_parameters_user()
     mode = prompt_mode()
-    println("Selected charging mode: $mode")
-    return (params=params, mode=mode)
+
+    model = Model(Ipopt.Optimizer)
+
+    @variable(model, 0 <= SOC[1:T, 1:n] <= 1)
+    @variable(model, 0 <= P[1:T-1, 1:n])
+
+    for v in 1:n
+        @constraint(model, SOC[1, v] == SOC_initial[v])
+        for t in 1:(T-1)
+            if arrival_time[v] <= t < departure_time[v]
+                @constraint(model, P[t, v] <= S_ev[v])
+                @constraint(model, SOC[t+1, v] == SOC[t, v] + (η * P[t, v] * Δt) / E[v])
+            else
+                @constraint(model, P[t, v] == 0)
+                @constraint(model, SOC[t+1, v] == SOC[t, v])
+            end
+        end
+        @constraint(model, SOC[departure_time[v], v] >= SOC_target[v])
+    end
+
+    @objective(model, Min, sum(P))
+    optimize!(model)
+
+    return (mode=mode, SOC=value.(SOC), P=value.(P))
 end
 
 end # module EVSmartCharge

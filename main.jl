@@ -9,9 +9,9 @@ function main()
     try
         result = run_model()
         println("Model run completed.")
-        if result !== nothing
-            println("Result: ", result)
-        end
+        println("Selected mode: ", result.mode)
+        println("Charging power schedule (kW):\n", result.P)
+        println("State of charge trajectory:\n", result.SOC)
     catch err
         println("Model run failed: ", err)
     end
