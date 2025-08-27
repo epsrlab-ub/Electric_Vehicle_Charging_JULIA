@@ -23,3 +23,16 @@ This work is the result of collaborative efforts:
 - **Power-flow solved** via current-injection model  
 - **Voltage limits enforced** (0.95–1.05 p.u.)  
 - **Plots of bus voltages and EV SOC trajectories**
+
+## Usage
+
+1. Install [Julia](https://julialang.org/).
+2. From the repository root, run the driver script:
+   
+   ```bash
+   julia main.jl
+   ```
+3. The program will prompt you to enter EV parameters and choose a charging mode.
+   Follow the on-screen instructions to provide the required values.
+4. Upon completion, the script will display whether the model ran successfully and
+   print any results returned by `run_model()`.
