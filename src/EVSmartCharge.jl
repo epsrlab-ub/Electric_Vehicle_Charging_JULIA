@@ -139,3 +139,17 @@ function prompt_mode()
         end
         println("Please enter 1, 2, 3, 4, or 5 (no default).")
 
+    end
+end
+
+"""
+Run the EV charging model (placeholder).
+"""
+function run_model()
+    params = set_parameters_user()
+    mode = prompt_mode()
+    println("Selected charging mode: $mode")
+    return (params=params, mode=mode)
+end
+
+end # module EVSmartCharge
