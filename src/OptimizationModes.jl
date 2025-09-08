@@ -1,6 +1,6 @@
 module OptimizationModes
 
-using JuMP, Ipopt
+using JuMP, Ipopt, Plots, Measures
 
 # Simple integer prompt helper used by the mode selector
 function prompt_int(msg, default)
@@ -111,6 +111,7 @@ function run_optimization()
         optimize!(PF)
 
         V_Real_uc = value.(V_Real); V_Imag_uc = value.(V_Imag)
+        plot_voltage_ev_buses(V_Real_uc, V_Imag_uc, ev_bus, T)
     elseif mode == 2
         # -----------------------------------------
         # Mode 2: Smart (active power only)
@@ -162,6 +163,7 @@ function run_optimization()
 
         @objective(SMARTCHARGE, Min,sum( (SOC[t, v] - SOC_target[v])^2 for t in 1:T, v in 1:V ))
         optimize!(SMARTCHARGE)
+        plot_voltage_ev_buses(value.(V_Real), value.(V_Imag), ev_bus, T)
 
     elseif mode == 3
         # -----------------------------------------
@@ -220,6 +222,7 @@ function run_optimization()
 
         @objective(SMARTCHARGE, Min,sum( (SOC[t, v] - SOC_target[v])^2 for t in 1:T, v in 1:V ))
         optimize!(SMARTCHARGE)
+        plot_voltage_ev_buses(value.(V_Real), value.(V_Imag), ev_bus, T)
 
     elseif mode == 4
         # -----------------------------------------
@@ -284,6 +287,7 @@ function run_optimization()
         @objective(SMARTCHARGE, Min, sum((SOC[t, v] - SOC_target[v])^2 for t in 1:T, v in 1:V ))
 
         optimize!(SMARTCHARGE)
+        plot_voltage_ev_buses(value.(V_Real), value.(V_Imag), ev_bus, T)
 
     elseif mode == 5
         # -----------------------------------------
@@ -354,8 +358,47 @@ function run_optimization()
 
         @objective(SMARTCHARGE, Min, sum((SOC[t, v] - SOC_target[v])^2 for t in 1:T, v in 1:V ))
         optimize!(SMARTCHARGE)
+        plot_voltage_ev_buses(value.(V_Real), value.(V_Imag), ev_bus, T)
     end
 end
 
-end # module OptimizationModes
+function plot_voltage_ev_buses(V_Real_val, V_Imag_val, ev_bus, T)
+    V_mag = sqrt.(V_Real_val.^2 .+ V_Imag_val.^2)
+    ev_buses = sort(unique(ev_bus))
+    time_steps = 0:(T-1)
 
+    plt = plot(
+        title = "Voltage Magnitude at EV Connection Buses",
+        xlabel = "Hour",
+        ylabel = "Voltage Magnitude (p.u.)",
+        legend = :topright,
+        linewidth = 2,
+        ylims = (0.85, 1.15),
+        xticks = collect(time_steps),
+        grid = true,
+        size = (1200, 600),
+        left_margin = 20Plots.px,
+        bottom_margin = 20Plots.px,
+        top_margin = 10Plots.px,
+        right_margin = 10Plots.px,
+        dpi = 300,
+    )
+
+    colors = palette(:tab10)
+    for (i, bus) in enumerate(ev_buses)
+        plot!(plt, time_steps, vec(V_mag[bus, :]),
+              label = "Bus $bus",
+              linewidth = 2,
+              color = colors[i])
+    end
+
+    hline!([0.95, 1.05],
+           color = :red,
+           linestyle = :dash,
+           label = "Voltage Limits",
+           linewidth = 2)
+
+    display(plt)
+end
+
+end # module OptimizationModes
