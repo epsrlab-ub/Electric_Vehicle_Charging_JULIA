@@ -1,6 +1,6 @@
 module OptimizationModes
 
-using JuMP, Ipopt, Plots, Measures
+using JuMP
 
 # Simple integer prompt helper used by the mode selector
 function prompt_int(msg, default)
@@ -35,6 +35,12 @@ end
 # can be adapted into the main application as needed.
 # ---------------------------------------------------------------------------
 function run_optimization()
+    try
+        import Ipopt
+    catch err
+        error("Ipopt.jl is required for optimization modes: " * string(err))
+    end
+
     mode = prompt_mode()
 
     if mode == 1
@@ -363,11 +369,17 @@ function run_optimization()
 end
 
 function plot_voltage_ev_buses(V_Real_val, V_Imag_val, ev_bus, T)
+    try
+        import Plots
+    catch err
+        error("Plots.jl is required for plotting results: " * string(err))
+    end
+
     V_mag = sqrt.(V_Real_val.^2 .+ V_Imag_val.^2)
     ev_buses = sort(unique(ev_bus))
     time_steps = 0:(T-1)
 
-    plt = plot(
+    plt = Plots.plot(
         title = "Voltage Magnitude at EV Connection Buses",
         xlabel = "Hour",
         ylabel = "Voltage Magnitude (p.u.)",
@@ -384,21 +396,21 @@ function plot_voltage_ev_buses(V_Real_val, V_Imag_val, ev_bus, T)
         dpi = 300,
     )
 
-    colors = palette(:tab10)
+    colors = Plots.palette(:tab10)
     for (i, bus) in enumerate(ev_buses)
-        plot!(plt, time_steps, vec(V_mag[bus, :]),
+        Plots.plot!(plt, time_steps, vec(V_mag[bus, :]),
               label = "Bus $bus",
               linewidth = 2,
               color = colors[i])
     end
 
-    hline!([0.95, 1.05],
+    Plots.hline!([0.95, 1.05],
            color = :red,
            linestyle = :dash,
            label = "Voltage Limits",
            linewidth = 2)
 
-    display(plt)
+    Plots.display(plt)
 end
 
 end # module OptimizationModes

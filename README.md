@@ -1,5 +1,5 @@
 # Electric_Vehicle_Charging_JULIA
-This project implements a distribution network + electric vehicle (EV) charging optimization framework using Julia. The model is built with JuMP and solved with Ipopt, allowing multiple charging strategies to be simulated and compared on a per-bus basis.
+This project implements a distribution network + electric vehicle (EV) charging optimization framework using Julia. The model is built with JuMP and solved with Ipopt, allowing multiple charging strategies to be simulated and compared on a per-bus basis. The package loads Ipopt and plotting libraries only when required, so ensure those packages are installed before running the optimization or visualization routines.
 ## Contents
 - **Uncoordinated Charging**
 - **Smart Charging**
