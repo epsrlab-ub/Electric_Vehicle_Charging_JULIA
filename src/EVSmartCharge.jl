@@ -1,5 +1,5 @@
 module EVSmartCharge
-using JuMP, Ipopt, CSV, DataFrames, LinearAlgebra, Random
+using JuMP, CSV, DataFrames, LinearAlgebra, Random
 
 export run_model, set_parameters_user, prompt_mode
 # ------------------------------------------------------------
@@ -159,6 +159,12 @@ collected user inputs can be fed into an optimization model.
 function run_model()
     T, n, η, E, Δt, S_ev, SOC_initial, SOC_target, arrival_time, departure_time, ev_bus = set_parameters_user()
     mode = prompt_mode()
+
+    try
+        import Ipopt
+    catch err
+        error("Ipopt.jl is required to run optimization: " * string(err))
+    end
 
     model = Model(Ipopt.Optimizer)
 
