@@ -12,6 +12,12 @@ Continues prompting until the user provides a valid integer. Optional
 `min` and `max` bounds can be supplied to restrict the range of valid
 values.
 """
+function format_range(min, max)
+    lower = min === nothing ? "-∞" : string(min)
+    upper = max === nothing ? "∞" : string(max)
+    return "Value must be between $lower and $upper."
+end
+
 function read_int(prompt; min::Union{Nothing,Int}=nothing, max::Union{Nothing,Int}=nothing)
     while true
         print(prompt)
@@ -19,7 +25,7 @@ function read_int(prompt; min::Union{Nothing,Int}=nothing, max::Union{Nothing,In
         try
             v = parse(Int, s)
             if (min !== nothing && v < min) || (max !== nothing && v > max)
-                println("Value must be between $(min === nothing ? "-∞" : string(min)) and $(max === nothing ? "∞" : string(max)).")
+                println(format_range(min, max))
             else
                 return v
             end
@@ -40,7 +46,7 @@ function read_float(prompt; min::Union{Nothing,Float64}=nothing, max::Union{Noth
         try
             v = parse(Float64, s)
             if (min !== nothing && v < min) || (max !== nothing && v > max)
-                println("Value must be between $(min === nothing ? "-∞" : string(min)) and $(max === nothing ? "∞" : string(max)).")
+                println(format_range(min, max))
             else
                 return v
             end
