@@ -1,6 +1,11 @@
 #!/usr/bin/env julia
 # Entry point script for running the EVSmartCharge model
 
+# Activate the project environment and ensure dependencies are available
+using Pkg
+Pkg.activate(@__DIR__)
+Pkg.instantiate()
+
 # Make the source directory available on the load path and import the module
 push!(LOAD_PATH, joinpath(@__DIR__, "src"))
 using EVSmartCharge

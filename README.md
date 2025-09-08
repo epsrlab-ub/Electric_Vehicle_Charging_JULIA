@@ -28,10 +28,12 @@ This work is the result of collaborative efforts:
 
 1. Install [Julia](https://julialang.org/).
 2. From the repository root, run the driver script:
-   
+
    ```bash
    julia main.jl
    ```
+   The script activates this project's environment and runs `Pkg.instantiate()`
+   so all required packages (e.g. JuMP) are installed automatically.
 3. The program will prompt you to enter EV parameters and choose a charging mode.
    Follow the on-screen instructions to provide the required values.
 4. Upon completion, the script will display whether the model ran successfully and
