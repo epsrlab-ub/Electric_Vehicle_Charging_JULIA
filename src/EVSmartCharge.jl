@@ -1,5 +1,5 @@
 module EVSmartCharge
-using JuMP, CSV, DataFrames, LinearAlgebra, Random
+using JuMP, LinearAlgebra, Random
 
 export run_model, set_parameters_user, prompt_mode
 # ------------------------------------------------------------
