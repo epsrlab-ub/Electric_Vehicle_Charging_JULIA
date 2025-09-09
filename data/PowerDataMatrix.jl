@@ -1,5 +1,5 @@
 # Convert Power Data consisting of real and imaginary load to matrices of 24 hour time window
-using  DataFrames, DelimitedFiles, CSV, Tables, XLSX
+using DelimitedFiles, XLSX
 
 # Load the power data
 loaddata = readdlm("powerdata_PV.txt")
@@ -25,6 +25,6 @@ PV_matrix = PV * PVTimes
 # PV_matrix = PV * ones(1,24)
 
 # Save the matrices to CSV files
-CSV.write("Pload_matrix.csv", DataFrame(Pload_matrix, :auto))
-CSV.write("Qload_matrix.csv", DataFrame(Qload_matrix, :auto))
-CSV.write("PV_matrix.csv", DataFrame(PV_matrix, :auto))
+writedlm("Pload_matrix.csv", Pload_matrix, ',')
+writedlm("Qload_matrix.csv", Qload_matrix, ',')
+writedlm("PV_matrix.csv", PV_matrix, ',')
