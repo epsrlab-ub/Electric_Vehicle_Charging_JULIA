@@ -8,7 +8,7 @@ Pkg.instantiate()
 
 # Make the source directory available on the load path and import the module
 push!(LOAD_PATH, joinpath(@__DIR__, "src"))
-using EVSmartChargedcdcdc
+using EVSmartCharge
 
 function main()
     try
